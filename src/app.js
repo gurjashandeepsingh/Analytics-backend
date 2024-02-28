@@ -31,16 +31,6 @@ const dbConnection = db.connect((err) => {
 
 app.use("/services", servicesRouter);
 
-// API to list all transactions with search and pagination support
-
-// API for statistics
-
-// API for bar chart
-
-// API for pie chart
-
-// Combined API
-
 // Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
