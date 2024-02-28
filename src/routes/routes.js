@@ -3,6 +3,7 @@ import { validationResult, body, query } from "express-validator";
 const router = express.Router();
 import { Services } from "../services/services.js";
 
+// This code defines a route to initialize the database by calling a method to seed the database with data.
 router.get("/initialize-database", async (req, res) => {
   try {
     const seedDataInstance = await new Services();
@@ -13,6 +14,7 @@ router.get("/initialize-database", async (req, res) => {
   }
 });
 
+// This is a JavaScript code for handling transactions route with validation of query parameters like page, perPage, and search.
 const transactionValidation = [
   query("page").notEmpty().withMessage("Page number not defined"),
   query("perPage").notEmpty().withMessage("Per page is not defined"),
@@ -38,6 +40,7 @@ router.get(
   }
 );
 
+// This code defines a route "/statistics" that accepts a query parameter "month" and validates it using the statisticsValidation middleware. It then calls a service method to fetch statistics data for the specified month and returns the result.
 const statisticsValidation = [
   query("month").notEmpty().withMessage("Month not mentioned"),
 ];
@@ -52,6 +55,7 @@ router.get("/statistics", statisticsValidation, async (request, response) => {
   }
 });
 
+// JavaScript code for handling a GET request to generate a bar chart based on the provided month
 const barChartValidation = [
   query("month").notEmpty().withMessage("Please provide month"),
 ];
@@ -66,6 +70,7 @@ router.get("/bar-chart", barChartValidation, async (request, response) => {
   }
 });
 
+// This code defines a route for fetching data for a pie chart based on the provided month parameter. It validates the presence of the month parameter in the query string and then calls the pieChart method from a Services instance to retrieve the data.
 const pieChartValidation = [
   query("month").notEmpty().withMessage("Please provide month"),
 ];
@@ -80,6 +85,7 @@ router.get("/pie-chart", pieChartValidation, async (request, response) => {
   }
 });
 
+// This code defines a route "/combined-data" with query parameter validations for month, page, and perPage. It then calls a service method to fetch combined data based on the provided query parameters.
 const combinedValidation = [
   query("month").notEmpty().withMessage("Please provide Month"),
   query("page").notEmpty().withMessage("Page number not defined"),

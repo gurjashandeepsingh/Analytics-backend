@@ -4,7 +4,13 @@ import { request, response } from "express";
 import { db } from "../app.js";
 
 class Services {
-  // Initialize the database with seed data fetched from the third-party API
+  /**
+   * Seed the database with data fetched from a third-party API.
+   * Fetches product data from a specified URL, truncates the existing 'products' table,
+   * and inserts seed data into the table.
+   *
+   * @returns {Promise<void>} A Promise indicating the completion of the database seeding process.
+   */
   async seedDatabase() {
     const response = await axios.get(
       "https://s3.amazonaws.com/roxiler.com/product_transaction.json"
@@ -49,6 +55,12 @@ class Services {
     return result;
   }
 
+  /**
+   * Retrieves statistics for a given month.
+   * @param {number} month - The month for which to retrieve statistics.
+   * @returns {Promise<Object>} A Promise that resolves to an object containing the total sale amount, total number of sold items, and total number of unsold items for the specified month.
+   * @throws {Error} If there is an error fetching the statistics.
+   */
   async showStatistics(month) {
     const totalSaleQuery = `SELECT SUM(price) AS totalSaleAmount FROM products WHERE MONTH(dateOfSale) = ${month}`;
     const totalSoldItemsQuery = `SELECT COUNT(*) AS totalSoldItems FROM products WHERE MONTH(dateOfSale) = ${month} AND sold = true`;
@@ -75,6 +87,12 @@ class Services {
     }
   }
 
+  /**
+   * Retrieves the count of products sold within different price ranges for a given month.
+   * @param {number} month - The month for which to retrieve the data.
+   * @returns {Promise<Array<Object>>} A Promise that resolves to an array of objects, where each object represents a price range and its corresponding count of sold products.
+   * @throws {Error} If there is an error fetching the data.
+   */
   async barChart(month) {
     const priceRanges = [
       { range: "0 - 100", min: 0, max: 100 },
@@ -102,6 +120,12 @@ class Services {
     return barChartData;
   }
 
+  /**
+   * Retrieves the count of products sold within different categories for a given month.
+   * @param {number} month - The month for which to retrieve the data.
+   * @returns {Promise<Array<Object>>} A Promise that resolves to an array of objects, where each object represents a category and its corresponding count of sold products.
+   * @throws {Error} If there is an error fetching the data.
+   */
   async pieChart(month) {
     const query = `SELECT category, COUNT(*) AS count FROM products WHERE MONTH(dateOfSale) = ${month} GROUP BY category`;
 
@@ -114,6 +138,15 @@ class Services {
     }
   }
 
+  /**
+   * Retrieves combined data for a given month, page, perPage, and search criteria.
+   * @param {number} month - The month for which to retrieve the data.
+   * @param {number} page - The page number for pagination.
+   * @param {number} perPage - The number of items per page for pagination.
+   * @param {string} search - The search criteria for filtering the data.
+   * @returns {Promise<Object>} A Promise that resolves to an object containing the combined data, including transactions, statistics, bar chart, and pie chart.
+   * @throws {Error} If there is an error fetching the data.
+   */
   async combined(month, page, perPage, search) {
     const transactions = await axios.get(
       `http://localhost:${port}/services/transactions?page=${page}&perPage=${perPage}&month=${month}&search=${search}`
@@ -139,6 +172,12 @@ class Services {
   }
 }
 
+/**
+ * Executes a database query and returns a promise that resolves with the result.
+ * @param {string} query - The SQL query to execute.
+ * @returns {Promise} A promise that resolves with the result of the query.
+ * @throws {Error} If there is an error executing the query.
+ */
 function queryPromise(query) {
   return new Promise((resolve, reject) => {
     db.query(query, (err, result) => {
