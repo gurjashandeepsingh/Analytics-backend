@@ -45,6 +45,14 @@ class Services {
     });
   }
 
+  /**
+   * Retrieves all transactions with pagination and search criteria.
+   * @param {number} page - The page number for pagination.
+   * @param {number} perPage - The number of items per page for pagination.
+   * @param {string} search - The search criteria for filtering the data.
+   * @returns {Promise<Array<Object>>} A Promise that resolves to an array of objects representing the transactions.
+   * @throws {Error} If there is an error fetching the data.
+   */
   async allTransactions(page, perPage, search) {
     // Pagination
     const offset = (page - 1) * perPage;
